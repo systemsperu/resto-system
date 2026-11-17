@@ -1,0 +1,32 @@
+# Evita publicar secretos, datos y dependencias si se agregan archivos por error.
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.pfx
+*.p12
+*.crt
+*.cer
+*.sql
+*.sqlite
+*.sqlite3
+*.bak
+*.dump
+*.log
+*.zip
+*.rar
+*.7z
+vendor/
+node_modules/
+storage/
+bootstrap/cache/
+.idea/
+.vscode/
+Thumbs.db
+~$*.docx
+
+# Insumos locales usados para generar el documento; no forman parte de la entrega.
+/tools/
+/docs/pa2_assets/
+
