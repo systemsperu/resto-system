@@ -1,0 +1,116 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Order extends Model
+{
+    protected $fillable = [
+        'table_id',
+        'user_id',
+        'waiter_employee_id',
+        'client_id',
+        'status',
+        'total',
+        'payment_method',
+        'received_amount',
+        'change_amount',
+        'document_type',
+        'client_name',
+        'client_document',
+        'discount',
+        'tip',
+        'cash_register_id',
+
+        // ── SUNAT ──────────────────────────────────────
+        'serie',
+        'correlativo',
+        'subtotal',
+        'igv',
+        'total_gravada',
+        'total_exonerada',
+        'total_inafecta',
+        'total_gratuita',
+        'sunat_status',
+        'sunat_code',
+        'sunat_description',
+        'xml_path',
+        'cdr_path',
+        'pdf_path',
+        'hash',
+        'sent_at',
+    ];
+
+    protected $casts = [
+        'sent_at' => 'datetime',
+        'subtotal' => 'decimal:2',
+        'igv' => 'decimal:2',
+        'total' => 'decimal:2',
+        'received_amount' => 'decimal:2',
+        'change_amount' => 'decimal:2',
+        'discount' => 'decimal:2',
+        'tip' => 'decimal:2',
+        'total_gravada' => 'decimal:2',
+        'total_exonerada' => 'decimal:2',
+        'total_inafecta' => 'decimal:2',
+        'total_gratuita' => 'decimal:2',
+    ];
+
+    public function table()
+    {
+        return $this->belongsTo(Table::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function waiter()
+    {
+        return $this->belongsTo(Employee::class, 'waiter_employee_id');
+    }
+
+    public function client()
+    {
+        return $this->belongsTo(Client::class);
+    }
+
+    public function details()
+    {
+        return $this->hasMany(OrderDetail::class);
+    }
+
+    public function cashRegister()
+    {
+        return $this->belongsTo(CashRegister::class);
+    }
+
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
+    }
+
+    public function creditNotes()
+    {
+        return $this->hasMany(CreditNote::class);
+    }
+
+    /**
+     * "B001-15" / "F001-3" / null si aún no se ha numerado.
+     */
+    public function getFullNumberAttribute(): ?string
+    {
+        if (! $this->serie || ! $this->correlativo) {
+            return null;
+        }
+
+        return sprintf('%s-%d', $this->serie, $this->correlativo);
+    }
+
+    public function isElectronic(): bool
+    {
+        return in_array($this->document_type, ['Boleta', 'Factura'], true);
+    }
+}

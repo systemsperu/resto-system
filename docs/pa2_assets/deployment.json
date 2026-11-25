@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "RESTO SYSTEM — Despliegue comprobable",
+    "quality_profile": "showcase",
+    "viewBox": [1180, 720]
+  },
+  "components": [
+    {"id":"browser","type":"frontend","label":"Navegador web","sublabel":"Teléfono, tableta o PC","pos":[60,250],"size":[180,72]},
+    {"id":"pwa","type":"frontend","label":"PWA instalable","sublabel":"Manifest y service worker","pos":[60,410],"size":[180,72]},
+    {"id":"webserver","type":"external","label":"Servidor HTTP","sublabel":"Producto y protocolo no comprobados","pos":[350,330],"size":[220,72]},
+    {"id":"laravel","type":"backend","label":"Aplicación Laravel 12","sublabel":"PHP 8.3 en entorno inspeccionado","pos":[680,250],"size":[220,72]},
+    {"id":"assets","type":"frontend","label":"Recursos compilados","sublabel":"Blade + Vite + Bootstrap","pos":[680,430],"size":[220,72]},
+    {"id":"db","type":"database","label":"Base de datos SQL","sublabel":"Motor activo pendiente","pos":[970,210],"size":[180,72]},
+    {"id":"storage","type":"database","label":"Storage Laravel","sublabel":"Archivos locales/públicos","pos":[970,390],"size":[180,72]},
+    {"id":"sessions","type":"database","label":"Sesiones","sublabel":"driver por defecto; runtime pendiente","pos":[970,540],"size":[180,72]}
+  ],
+  "boundaries": [
+    {"kind":"region","label":"Dispositivo del usuario","wraps":["browser","pwa"],"pad":28},
+    {"kind":"region","label":"Instalación independiente","wraps":["webserver","laravel","assets","db","storage","sessions"],"pad":30}
+  ],
+  "connections": [
+    {"id":"browser-request","from":"browser","to":"webserver","label":"solicitud web","variant":"emphasis"},
+    {"id":"pwa-request","from":"pwa","to":"webserver","label":"solicitud web","variant":"emphasis"},
+    {"id":"dispatch-app","from":"webserver","to":"laravel","label":"despacho HTTP"},
+    {"id":"serve-assets","from":"webserver","to":"assets","label":"entrega recursos"},
+    {"id":"sql","from":"laravel","to":"db"},
+    {"id":"files","from":"laravel","to":"storage"},
+    {"id":"session-data","from":"laravel","to":"sessions"}
+  ],
+  "cards": [
+    {"dot":"emerald","title":"Comprobado","items":["Repositorio bajo entorno local Laragon","Laravel, Blade, Vite y rutas PWA presentes"]},
+    {"dot":"orange","title":"Pendiente","items":["Servidor web, puerto, dominio y protocolo activos","Motor y versión de la base desplegada"]},
+    {"dot":"rose","title":"No inferir","items":["No se afirma infraestructura productiva","No se afirma contenedor Android operativo"]}
+  ]
+}

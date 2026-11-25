@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "RESTO SYSTEM — Arquitectura actual del alcance PA2",
+    "quality_profile": "showcase",
+    "viewBox": [1280, 760]
+  },
+  "components": [
+    {"id":"actor","type":"external","label":"Usuario operativo","sublabel":"admin / cashier / waiter","pos":[40,300],"size":[160,72]},
+    {"id":"blade","type":"frontend","label":"Interfaz Blade","sublabel":"Login, mesas y POS","pos":[250,300],"size":[170,72]},
+    {"id":"routes","type":"security","label":"Rutas + middleware","sublabel":"auth, module, permission","pos":[480,300],"size":[180,72]},
+    {"id":"controllers","type":"backend","label":"Controladores","sublabel":"Login, Pos y Table","pos":[730,300],"size":[170,72]},
+    {"id":"policy","type":"security","label":"OrderPolicy","sublabel":"Pedido propio o rol autorizado","pos":[730,120],"size":[170,72]},
+    {"id":"service","type":"backend","label":"OrderWorkflowService","sublabel":"Transacción y reglas del pedido","pos":[970,300],"size":[200,72]},
+    {"id":"models","type":"backend","label":"Modelos Eloquent","sublabel":"User, Table, Product, Order","pos":[970,470],"size":[200,72]},
+    {"id":"database","type":"database","label":"Base de datos SQL","sublabel":"Motor efectivo pendiente de comprobar","pos":[730,560],"size":[220,72]}
+  ],
+  "connections": [
+    {"id":"use-ui","from":"actor","to":"blade","label":"interacción web","variant":"emphasis","labelDy":60},
+    {"id":"http","from":"blade","to":"routes","label":"HTTP + CSRF","variant":"security","labelDy":-30},
+    {"id":"dispatch","from":"routes","to":"controllers","label":"autorizado","labelDy":60},
+    {"id":"authorize","from":"controllers","to":"policy","label":"authorize view/update","variant":"security"},
+    {"id":"invoke","from":"controllers","to":"service","label":"caso de uso"},
+    {"id":"domain","from":"service","to":"models","label":"persistencia de dominio","labelAt":[1070,400]},
+    {"id":"persist","from":"models","to":"database","label":"Eloquent / SQL","variant":"emphasis","labelAt":[960,556]}
+  ],
+  "cards": [
+    {"dot":"cyan","title":"Patrón observado","items":["Monolito Laravel con MVC y servicio de dominio","Blade comparte el flujo entre navegador y PWA"]},
+    {"dot":"emerald","title":"Integridad","items":["OrderWorkflowService usa transacciones y bloqueos","OrderPolicy limita al camarero responsable"]},
+    {"dot":"orange","title":"Límite de evidencia","items":["La base desplegada no fue consultada","La existencia de código no equivale a prueba aprobada"]}
+  ]
+}
